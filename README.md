@@ -40,5 +40,13 @@ run the simulation by using n_processors, and the parameter in par file:
 
 ```mpirun -np {n_processors } nekrs --setup {.par}```
 
+# Polaris
+
+then follow the modules, and install in
+```./scripts/nrsman hpc polaris```
+
+# submit job:
+```QUEUE=debug PROJ_ID=HeAirMix $NEKRS_HOME/bin/nrsqsub_polaris ethier 1 00:30```
+
 # Single phase
 # Multi phase
