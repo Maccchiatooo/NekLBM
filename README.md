@@ -45,6 +45,9 @@ run the simulation by using n_processors, and the parameter in par file:
 then follow the modules, and install in
 ```./scripts/nrsman hpc polaris```
 
+# initialize path
+```export NEKRS_HOME=/grand/projects/HeAirMix/czhao/nekrs_v24-dev/.local/nekrs```
+
 # submit job:
 ```QUEUE=debug PROJ_ID=HeAirMix $NEKRS_HOME/bin/nrsqsub_polaris ethier 1 00:30```
 
