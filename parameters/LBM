@@ -1,0 +1,80 @@
+! created by Chunheng Zhao 7/27 for multi-species LBM method
+
+!this is the essential parameters for 2D/3D LBM
+      !discrete velocity model D2Q9/D3Q19/D3Q27
+
+      integer :: q_vel
+      parameter(q_vel=9)
+      real :: tau(lx1*ly1*lelv)
+      integer:: lbm_t
+      real :: e_vx(q_vel)
+      real :: e_vy(q_vel)
+      real :: bb(q_vel)
+      real :: abc(q_vel)
+      real :: MM(q_vel,q_vel)
+      real :: MMT(q_vel,q_vel)
+      real :: Stau(q_vel,q_vel)
+      real :: SStau(q_vel,q_vel)
+      real :: Stemp(q_vel,q_vel)
+      real :: tmp(q_vel,q_vel)
+      real :: w_q(q_vel)
+      real :: f_1(lx1*ly1,lelv,q_vel)!,f(lx1*ly1*lelv)
+      real :: f_m1(lx1*ly1,lelv,q_vel)
+      real :: f_m2(lx1*ly1,lelv,q_vel)
+      real :: f_q(lx1*ly1*lelv),f_bq(lx1*ly1*lelv)
+      real :: f_qm1(lx1*ly1*lelv),f_qm2(lx1*ly1*lelv)
+      real :: velxn(lx1*ly1,lelv), velyn(lx1*ly1,lelv)
+      real :: denstN(lx1*ly1*lelv)
+      real :: f_temp(lx1*ly1*lelv), f_temp1(lx1*ly1*lelv)
+      real :: f_temp2(lx1*ly1*lelv), f_temp3(lx1*ly1*lelv)
+      real :: f_temp_b(lx1*ly1*lelv), f_temp1_b(lx1*ly1*lelv)
+      real :: f_temp2_b(lx1*ly1*lelv), f_temp3_b(lx1*ly1*lelv)
+      real :: conv(lx1*ly1*lelv),conv_b(lx1*ly1*lelv)
+      real :: conv_1(lx1*ly1*lelv),conv_1b(lx1*ly1*lelv)
+      real :: conv_2(lx1*ly1*lelv)
+      real :: conv_3(lx1*ly1*lelv)
+      real :: conv_4(lx1*ly1*lelv)
+      real :: dfx(lx1*ly1*lelv)
+      real :: dfy(lx1*ly1*lelv)
+      real :: dfz(lx1*ly1*lelv)
+      real :: dfx1(lx1*ly1*lelv)
+      real :: dfy1(lx1*ly1*lelv)
+      real :: dfz1(lx1*ly1*lelv)
+      real :: dfx2(lx1*ly1*lelv)
+      real :: dfy2(lx1*ly1*lelv)
+      real :: dfz2(lx1*ly1*lelv)
+      real :: dfx_b(lx1*ly1*lelv)
+      real :: dfy_b(lx1*ly1*lelv)
+      real :: dfz_b(lx1*ly1*lelv)
+      real :: g1m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g2m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g4m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g5m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g6m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g8m1_lbm(lx1,ly1,lz1,lelt)
+      real :: g9m1_lbm(lx1,ly1,lz1,lelt)
+      real :: diff(lx1*ly1*lelv)
+      real :: fqx(lx1*ly1*lelv), fqy(lx1*ly1*lelv)
+      real :: fqz(lx1*ly1*lelv)
+      real :: dux(lx1*ly1*lelv), duy(lx1*ly1*lelv)
+      real :: duz(lx1*ly1*lelv)
+      real :: dvx(lx1*ly1*lelv), dvy(lx1*ly1*lelv)
+      real :: dvz(lx1*ly1*lelv)
+      real :: vortlb(lx1*ly1*lelv)
+      real :: ex_u(lx1*ly1*lelv)
+      real :: ey_u(lx1*ly1*lelv)
+      real :: ex_ub(lx1*ly1*lelv)
+      real :: ey_ub(lx1*ly1*lelv)
+      real :: ex_uu(lx1*ly1*lelv)
+      real :: ey_uu(lx1*ly1*lelv)
+
+      common /LBM/ tau, e_vx,e_vy, w_q, f_1, f_q, 
+     $             velxn, velyn, denstN,diff,fqx,fqy,fqz,
+     $             f_temp, f_temp1, f_temp2, f_temp3, conv, 
+     $             dfx, dfy, dfz,dux,duy,duz,dvx,dvy,dvz,vortlb,
+     $             g1m1_lbm,g2m1_lbm,g4m1_lbm,g5m1_lbm,g6m1_lbm,
+     $             g8m1_lbm,g9m1_lbm,conv_b,conv_1,conv_2,conv_3,
+     $             conv_4,f_bq,dfx_b,dfy_b,dfz_b,bb,conv_1b,MM,
+     $             MMT,Stau,SStau,Stemp,tmp,f_m1,f_m2,f_qm1,f_qm2,
+     $             lbm_t,dfx1,dfy1,dfz1,dfx2,dfy2,dfz2,ex_u,ey_u,
+     $             ex_ub,ey_ub,ex_uu,ey_uu
