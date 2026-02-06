@@ -51,21 +51,21 @@ The lattice structures and simulation parameters are defined in specific files p
 ### Single-Phase Lattices
 | Dimension | Lattice Type | Parameter File |
 | :--- | :--- | :--- |
-| **2D** | D2Q9 | `LBM` |
-| **3D** | D3Q13 | `LBM13` |
-| **3D** | D3Q15 | `LBM15` |
-| **3D** | D3Q19 | `LBM19` |
-| **3D** | D3Q27 | `LBM27` |
+| **2D** | D2Q9 | `LBMD2Q9` |
+| **3D** | D3Q13 | `LBMD3Q13` |
+| **3D** | D3Q15 | `LBMD3Q15` |
+| **3D** | D3Q19 | `LBMD3Q19` |
+| **3D** | D3Q27 | `LBMD3Q27` |
 
 ### Multi-Phase & Multi-Species
 For specialized physics, parameters are stored in the following files:
 
 * **Multi-Phase Flow:**
-    * 2D: `LBMPHASE`
-    * 3D: `LBMPHASE3`
+    * 2D: `LBMPHASE2D`
+    * 3D: `LBMPHASE3D`
 * **Multi-Species Flow:**
-    * 2D: `LBMDIFFUSION`
-    * 3D: `LBMDIFFUSION3`
+    * 2D: `LBMDIFFUSION2D`
+    * 3D: `LBMDIFFUSION3D`
 Once the files are exchanged and parameters are set:
 1. Initialize your case directory using `makenek`.
 2. Compile as you would for a standard Nek5000 project.
