@@ -1,7 +1,7 @@
-! created by Chunheng Zhao 7/27 for D3Q13 LBM method
+! created by Chunheng Zhao 7/27 for LBM method
 
 !this is the essential parameters for 3D LBM
-      !discrete velocity model D3Q13
+      !discrete velocity model D3Q27
 
       integer :: q_vel
       parameter(q_vel=27)
