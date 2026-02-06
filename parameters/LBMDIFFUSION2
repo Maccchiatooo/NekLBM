@@ -1,0 +1,178 @@
+!created by Chunheng Zhao 7/27 for multi-species LBM method
+!this is the essential parameters for 2D/3D LBM
+!difference free phase field method 2/13/2025
+
+!Momentum
+
+      integer :: q_vel
+      parameter(q_vel=13)
+      real :: tau(lx1*ly1*lz1*lelv)
+      real :: e_vx(q_vel)
+      real :: e_vy(q_vel)
+      real :: e_vz(q_vel)
+      real :: bb(q_vel)
+      real :: tmp(q_vel,q_vel)
+      real :: w_q(q_vel)
+      real :: f_1(lx1*ly1*lz1,lelv,q_vel)
+      real :: f_1_neq(lx1*ly1*lz1,lelv,q_vel)
+      real :: f_q(lx1*ly1*lz1*lelv),f_bq(lx1*ly1*lz1*lelv)
+      real :: velxn(lx1*ly1*lz1,lelv), velyn(lx1*ly1*lz1,lelv)
+      real :: velzn(lx1*ly1*lz1,lelv)
+      real :: denstN(lx1*ly1*lz1*lelv)
+      real :: press(lx1*ly1*lz1*lelv)
+      real :: f_temp(lx1*ly1*lz1*lelv), f_temp1(lx1*ly1*lz1*lelv)
+      real :: f_temp2(lx1*ly1*lz1*lelv), f_temp3(lx1*ly1*lz1*lelv)
+      real :: f_temp_b(lx1*ly1*lz1*lelv), f_temp1_b(lx1*ly1*lz1*lelv)
+      real :: f_temp2_b(lx1*ly1*lz1*lelv), f_temp3_b(lx1*ly1*lz1*lelv)
+      real :: conv(lx1*ly1*lz1*lelv),conv_b(lx1*ly1*lz1*lelv)
+      real :: conv_1(lx1*ly1*lz1*lelv),conv_1b(lx1*ly1*lz1*lelv)
+      real :: conv_2(lx1*ly1*lz1*lelv),conv_2b(lx1*ly1*lz1*lelv)
+      real :: conv_3(lx1*ly1*lz1*lelv),conv_3b(lx1*ly1*lz1*lelv)
+      real :: conv_4(lx1*ly1*lz1*lelv),conv_4b(lx1*ly1*lz1*lelv)
+      real :: vortlb(lx1*ly1*lz1*lelv)
+
+
+      common /LBM/ tau, e_vx,e_vy, bb,tmp,w_q, f_1, 
+     $             f_1_neq,f_q,f_bq,velxn,velyn,
+     $             denstN,f_temp,f_temp1,f_temp2,f_temp3, 
+     $             f_temp_b,f_temp1_b,f_temp2_b,f_temp3_b,
+     $             conv,conv_b,conv_1,conv_1b,conv_2,conv_2b,
+     $             conv_3,conv_3b,conv_4,conv_4b,vortlb,
+     $             press,e_vz,velzn
+
+!phase field 
+      real :: tphi(lx1*ly1*lz1*lelv)
+      real :: g_1(lx1*ly1*lz1,lelv,q_vel)
+      real :: g_1_neq(lx1*ly1*lz1,lelv,q_vel)
+      real :: g_q(lx1*ly1*lz1*lelv),g_bq(lx1*ly1*lz1*lelv)
+      real :: phi1(lx1*ly1*lz1*lelv),phi2(lx1*ly1*lz1*lelv)
+      real :: g_temp(lx1*ly1*lz1*lelv), g_temp1(lx1*ly1*lz1*lelv)
+      real :: g_temp2(lx1*ly1*lz1*lelv), g_temp3(lx1*ly1*lz1*lelv)
+      real :: g_temp_b(lx1*ly1*lz1*lelv), g_temp1_b(lx1*ly1*lz1*lelv)
+      real :: g_temp2_b(lx1*ly1*lz1*lelv), g_temp3_b(lx1*ly1*lz1*lelv)
+
+
+      common /phasefield/ tphi, g_1, g_1_neq,g_q,g_bq,
+     $             phi1,phi2,g_temp,g_temp1,g_temp2,g_temp3, 
+     $             g_temp_b,g_temp1_b,g_temp2_b,g_temp3_b
+
+
+!constant parameter
+      real :: rho1,rho2
+      real :: tau1,tau2
+      real :: M
+      real :: tau_phi
+      real :: sigma
+      real :: delta
+      real :: eps
+      real :: cs2
+      real :: Ca,Re,Bo,Ar
+      real :: g0
+      real :: D_MS
+      Integer:: timer
+
+      common /constpar/ rho1, rho2,tau1,tau2,M,tau_phi,sigma, 
+     $             delta, eps,Ca,Re,cs2,g0,timer,Bo,Ar,D_MS
+
+!derivative parameter
+      real :: dx1(lx1*ly1*lz1*lelv)
+      real :: dy1(lx1*ly1*lz1*lelv)
+      real :: dz1(lx1*ly1*lz1*lelv)
+      real :: sqd1(lx1*ly1*lz1*lelv)
+      real :: divx1(lx1*ly1*lz1*lelv)
+      real :: divy1(lx1*ly1*lz1*lelv)
+      real :: divz1(lx1*ly1*lz1*lelv)
+      real :: drx(lx1*ly1*lz1*lelv)
+      real :: dry(lx1*ly1*lz1*lelv)
+      real :: drz(lx1*ly1*lz1*lelv)
+      real :: dgx(lx1*ly1*lz1*lelv)
+      real :: dgy(lx1*ly1*lz1*lelv)
+      real :: dgz(lx1*ly1*lz1*lelv)
+      real :: dgx_b(lx1*ly1*lz1*lelv)
+      real :: dgy_b(lx1*ly1*lz1*lelv)
+      real :: dgz_b(lx1*ly1*lz1*lelv)
+      real :: dfx(lx1*ly1*lz1*lelv)
+      real :: dfy(lx1*ly1*lz1*lelv)
+      real :: dfz(lx1*ly1*lz1*lelv)
+      real :: dfx_b(lx1*ly1*lz1*lelv)
+      real :: dfy_b(lx1*ly1*lz1*lelv)
+      real :: dfz_b(lx1*ly1*lz1*lelv)
+      real :: dux(lx1*ly1*lz1*lelv), duy(lx1*ly1*lz1*lelv)
+      real :: duz(lx1*ly1*lz1*lelv)
+      real :: dvx(lx1*ly1*lz1*lelv), dvy(lx1*ly1*lz1*lelv)
+      real :: dvz(lx1*ly1*lz1*lelv)
+      real :: dwx(lx1*ly1*lz1*lelv), dwy(lx1*ly1*lz1*lelv)
+      real :: dwz(lx1*ly1*lz1*lelv)
+
+      common /deriv/ dx1, dy1,divx1,divy1,drx,dry,dgx, 
+     $             dgy, dgz,dgx_b,dgy_b,dgz_b,dfx,dfy,
+     $             dfz,dfx_b,dfy_b,dfz_b,dux,duy,duz,
+     $             dvx,dvy,dvz,sqd1,drz,dz1,divz1,dwx,
+     $             dwy,dwz
+
+
+      real :: convf(lx1*ly1*lz1*lelv),conv_bf(lx1*ly1*lz1*lelv)
+      real :: conv_1f(lx1*ly1*lz1*lelv),conv_1bf(lx1*ly1*lz1*lelv)
+      real :: conv_2f(lx1*ly1*lz1*lelv),conv_2bf(lx1*ly1*lz1*lelv)
+      real :: conv_3f(lx1*ly1*lz1*lelv),conv_3bf(lx1*ly1*lz1*lelv)
+      real :: conv_4f(lx1*ly1*lz1*lelv),conv_4bf(lx1*ly1*lz1*lelv)
+
+      common /convf/ convf,conv_bf,conv_1f,conv_1bf,conv_2f,
+     $		   conv_2bf,conv_3f,conv_3bf,conv_4f,conv_4bf	  
+
+
+
+      real :: dpx(lx1*ly1*lz1*lelv)
+      real :: dpy(lx1*ly1*lz1*lelv)
+      real :: dpz(lx1*ly1*lz1*lelv)
+      real :: dppx(lx1*ly1*lz1*lelv)
+      real :: dppy(lx1*ly1*lz1*lelv)
+      real :: dppz(lx1*ly1*lz1*lelv)
+      real :: nu(lx1*ly1*lz1*lelv)
+      real :: mu(lx1*ly1*lz1*lelv)
+      real :: ppress(lx1*ly1*lz1*lelv)
+      real :: divxx(lx1*ly1*lz1*lelv)
+      real :: divxy(lx1*ly1*lz1*lelv)
+      real :: divxz(lx1*ly1*lz1*lelv)
+      real :: divyx(lx1*ly1*lz1*lelv)
+      real :: divyy(lx1*ly1*lz1*lelv)
+      real :: divyz(lx1*ly1*lz1*lelv)
+      real :: divzx(lx1*ly1*lz1*lelv)
+      real :: divzy(lx1*ly1*lz1*lelv)
+      real :: divzz(lx1*ly1*lz1*lelv)
+      real :: div(lx1*ly1*lz1*lelv)
+      real :: dp(lx1*ly1*lz1*lelv)
+      real :: dpb(lx1*ly1*lz1*lelv)
+      real :: tau_w(lx1*ly1*lz1*lelv)
+      real :: u_ave(lx1*ly1*lz1*lelv)
+      real :: p_ave(lx1*ly1*lz1*lelv)
+      real :: phi_sum(lx1*ly1*lz1*lelv)
+      common /divp/ dpx, dpy,dpz,dppx,dppy,dppz,
+     $             nu,mu,ppress,divxx,divxy,divyx,
+     $             divyy,divxz,divyz,div,dp,dpb,
+     $             divzx,divzy,divzz,tau_w,u_ave,
+     $             p_ave,phi_sum
+
+
+      real :: denstN1(lx1*ly1*lz1*lelv)
+      real :: denstN2(lx1*ly1*lz1*lelv)
+      real :: velxn1(lx1*ly1*lz1,lelv)
+      real :: velyn1(lx1*ly1*lz1,lelv)
+      real :: velzn1(lx1*ly1*lz1,lelv)
+      real :: velxn2(lx1*ly1*lz1,lelv)
+      real :: velyn2(lx1*ly1*lz1,lelv)
+      real :: velzn2(lx1*ly1*lz1,lelv)
+      real :: chi1(lx1*ly1*lz1*lelv)
+      real :: chi2(lx1*ly1*lz1*lelv)
+      real :: uax1(lx1*ly1*lz1*lelv)
+      real :: uay1(lx1*ly1*lz1*lelv)
+      real :: uaz1(lx1*ly1*lz1*lelv)
+      real :: uax2(lx1*ly1*lz1*lelv)
+      real :: uay2(lx1*ly1*lz1*lelv)
+      real :: uaz2(lx1*ly1*lz1*lelv)
+
+      common /diffu/ denstN1, velxn1,velyn1,velzn1,
+     $             chi1,chi2,
+     $             denstN2,velxn2,velyn2,velzn2,
+     $             uax1,uay1,uaz1,uax2,uay2,uaz2
+
