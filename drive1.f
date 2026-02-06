@@ -7,7 +7,7 @@ c
 c
       include 'OPCTR'
       include 'CTIMER'
-      include 'LBM13'
+      include 'LBMD3Q13'
 
       integer comm
       common /nekmpi/ mid,mp,nekcomm,nekgroup,nekreal
@@ -142,7 +142,7 @@ c-----------------------------------------------------------------------
       include 'TSTEP'
       include 'INPUT'
       include 'CTIMER'
-      include 'LBM13'
+      include 'LBMD3Q13'
 
       integer :: unit_number, iostat
       character(len=100) :: filename
@@ -264,7 +264,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
 
         real tmpvel1,tmpvel2,tmpvel3,tmpw2,xa,ya,za
         real uc,Re,cs2,delta,kappa,machN,taui,R,rr
@@ -356,7 +356,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
                         
         real tmpvel1,tmpvel2,tmpvel3,tmpw2,f_1_eq
         real uc,Re,cs2,delta,kappa,machN,taui
@@ -477,7 +477,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
         
         integer q
 
@@ -494,7 +494,7 @@ c-----------------------------------------------------------------------
           implicit none
           include 'SIZE'
           include 'TOTAL'
-          include 'LBM13'
+          include 'LBMD3Q13'
           integer nq,i,npts
           
           npts=lx1*ly1*lz1*lelv
@@ -519,7 +519,7 @@ c-----------------------------------------------------------------------
             implicit none
             include 'SIZE'
             include 'TOTAL'
-            include 'LBM13'
+            include 'LBMD3Q13'
 
             integer :: i,npts,nq
             real :: xa,ya,f_tem(lx1*ly1*lz1*lelv)
@@ -550,7 +550,7 @@ c-----------------------------------------------------------------------
         ! implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
 
         integer :: i,npts,nq,e,nto,ix,iy,iz,f,ia
         real :: xa,ya,za,f_tem(1),f_tem_b(1)
@@ -616,7 +616,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
         call q_filter_lbm_3(param(103))   
         call lbm_density_3
         call lbm_velocity_3
@@ -629,7 +629,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
 
         integer    i,q
         integer npts
@@ -652,7 +652,7 @@ c-----------------------------------------------------------------------
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
 
         integer i,q
         integer npts
@@ -678,493 +678,6 @@ c-----------------------------------------------------------------------
         return
       endsubroutine
 
-c--------------------------------------------------------------------
-      subroutine initLBM_3
-C--------------------------------------------------------------------
-
-
-C
-C     Initialize LBM
-C
-C--------------------------------------------------------------------
-      include 'SIZE'
-      include 'TOTAL'
-      include 'CTIMER'
-      include 'LBM3'
-
-!      6  2  5 
-!        \|/
-!      3--+--1
-!        /|\
-!      7  4  8
-
-c     Set default logicals
-            integer::npts,NTOT1
-            NTOT1=lx1*ly1*lz1*lelv
-            npts=lx1*ly1*lz1*lelv*q_vel
-
-            CALL RZERO(velxn,NTOT1)
-            CALL RZERO(velyn,NTOT1)
-            CALL RZERO(velzn,NTOT1)
-            CALL RZERO(denstN,NTOT1)
-            CALL RZERO(f_1,npts)
-
-            e_vx(27) =  0.d0
-            e_vy(27) =  0.d0
-            e_vz(27) =  0.d0
-
-            e_vx(1) =  1.d0
-            e_vy(1) =  0.d0
-            e_vz(1) =  0.d0
-
-            e_vx(14) =  -1.d0
-            e_vy(14) =  0.d0
-            e_vz(14) =  0.d0            
-
-            e_vx(2) =  0.d0
-            e_vy(2) =  1.d0
-            e_vz(2) =  0.d0
-
-            e_vx(15) =  0.d0
-            e_vy(15) =  -1.d0
-            e_vz(15) =  0.d0
-
-            e_vx(3) =  0.d0
-            e_vy(3) =  0.d0
-            e_vz(3) =  1.d0
-
-            e_vx(16) =  0.d0
-            e_vy(16) =  0.d0
-            e_vz(16) =  -1.d0
-
-            e_vx(4) =  1.d0
-            e_vy(4) =  1.d0
-            e_vz(4) =  0.d0
-
-            e_vx(17) =  -1.d0
-            e_vy(17) =  -1.d0
-            e_vz(17) =  0.d0
-
-
-            e_vx(5) =  1.d0
-            e_vy(5) =  -1.d0
-            e_vz(5) =  0.d0
-
-
-            e_vx(18) =  -1.d0
-            e_vy(18) =  1.d0
-            e_vz(18) =  0.d0
-
-
-            e_vx(6) =  1.d0
-            e_vy(6) =  0.d0
-            e_vz(6) =  1.d0
-
-            e_vx(19) =  -1.d0
-            e_vy(19) =  0.d0
-            e_vz(19) =  -1.d0            
-
-            e_vx(7) =  1.d0
-            e_vy(7) =  0.d0
-            e_vz(7) =  -1.d0
-
-            e_vx(20) =  -1.d0
-            e_vy(20) =  0.d0
-            e_vz(20) =  1.d0
-
-            e_vx(8) =  0.d0
-            e_vy(8) =  1.d0
-            e_vz(8) =  1.d0
-
-            e_vx(21) =  0.d0
-            e_vy(21) =  -1.d0
-            e_vz(21) =  -1.d0
-
-            e_vx(9) =  0.d0
-            e_vy(9) =  1.d0
-            e_vz(9) =  -1.d0
-
-            e_vx(22) =  0.d0
-            e_vy(22) =  -1.d0
-            e_vz(22) =  1.d0
-
-            e_vx(10) =  1.d0
-            e_vy(10) =  1.d0
-            e_vz(10) =  1.d0
-
-            e_vx(23) =  -1.d0
-            e_vy(23) =  -1.d0
-            e_vz(23) =  -1.d0
-
-            e_vx(11) =  1.d0
-            e_vy(11) =  -1.d0
-            e_vz(11) =  1.d0
-
-            e_vx(24) =  -1.d0
-            e_vy(24) =  1.d0
-            e_vz(24) =  -1.d0            
-
-            e_vx(12) =  1.d0
-            e_vy(12) =  1.d0
-            e_vz(12) =  -1.d0
-
-            e_vx(25) =  -1.d0
-            e_vy(25) =  -1.d0
-            e_vz(25) =  1.d0
-
-            e_vx(13) =  1.d0
-            e_vy(13) =  -1.d0
-            e_vz(13) =  -1.d0
-
-            e_vx(26) =  -1.d0
-            e_vy(26) =  1.d0
-            e_vz(26) =  1.d0
-
-            bb(1) = 14
-            bb(2) = 15
-            bb(3) = 16
-            bb(4) = 17
-            bb(5) = 18
-            bb(6) = 19
-            bb(7) = 20
-            bb(8) = 21
-            bb(9) = 22
-            bb(10) = 23
-            bb(11) = 24
-            bb(12) = 25
-            bb(13) = 26
-            bb(14) = 1
-            bb(15) = 2
-            bb(16) = 3
-            bb(17) = 4
-            bb(18) = 5
-            bb(19) = 6
-            bb(20) = 7
-            bb(21) = 8
-            bb(22) = 9
-            bb(23) = 10
-            bb(24) = 11
-            bb(25) = 12
-            bb(26) = 13
-            bb(27) = 27
-
-
-            w_q(27) = 8.0 / 27.0
-            w_q(1) = 2.0 / 27.0
-            w_q(14) = 2.0 / 27.0
-            w_q(2) = 2.0 / 27.0
-            w_q(15) = 2.0 / 27.0
-            w_q(3) = 2.0 / 27.0
-            w_q(16) = 2.0 / 27.0
-            w_q(4) = 1.0 / 54.0
-            w_q(17) = 1.0 / 54.0
-            w_q(5) = 1.0 / 54.0
-            w_q(18) = 1.0 / 54.0
-            w_q(6) = 1.0 / 54.0
-            w_q(19) = 1.0 / 54.0
-            w_q(7) = 1.0 / 54.0
-            w_q(20) = 1.0 / 54.0
-            w_q(8) = 1.0 / 54.0
-            w_q(21) = 1.0 / 54.0
-            w_q(9) = 1.0 / 54.0
-            w_q(22) = 1.0 / 54.0
-            w_q(10) = 1.0 / 216.0
-            w_q(23) = 1.0 / 216.0
-            w_q(11) = 1.0 / 216.0
-            w_q(24) = 1.0 / 216.0
-            w_q(12) = 1.0 / 216.0
-            w_q(25) = 1.0 / 216.0
-            w_q(13) = 1.0 / 216.0
-            w_q(26) = 1.0 / 216.0
-
-
-      RETURN
-      END
-
-      subroutine initLBM_15
-C--------------------------------------------------------------------
-C
-C     Initialize LBM
-C
-C--------------------------------------------------------------------
-      include 'SIZE'
-      include 'TOTAL'
-      include 'CTIMER'
-      include 'LBM15'
-
-!      6  2  5 
-!        \|/
-!      3--+--1
-!        /|\
-!      7  4  8
-
-c     Set default logicals
-            integer::npts,NTOT1
-            NTOT1=lx1*ly1*lz1*lelv
-            npts=lx1*ly1*lz1*lelv*q_vel
-
-            CALL RZERO(velxn,NTOT1)
-            CALL RZERO(velyn,NTOT1)
-            CALL RZERO(velzn,NTOT1)
-            CALL RZERO(denstN,NTOT1)
-            CALL RZERO(f_1,npts)
-
-            e_vx(15) =  0.d0
-            e_vy(15) =  0.d0
-            e_vz(15) =  0.d0
-
-            e_vx(1) =  1.d0
-            e_vy(1) =  0.d0
-            e_vz(1) =  0.d0
-
-            e_vx(8) =  -1.d0
-            e_vy(8) =  0.d0
-            e_vz(8) =  0.d0            
-
-            e_vx(2) =  0.d0
-            e_vy(2) =  1.d0
-            e_vz(2) =  0.d0
-
-            e_vx(9) =  0.d0
-            e_vy(9) =  -1.d0
-            e_vz(9) =  0.d0
-
-            e_vx(3) =  0.d0
-            e_vy(3) =  0.d0
-            e_vz(3) =  1.d0
-
-            e_vx(10) =  0.d0
-            e_vy(10) =  0.d0
-            e_vz(10) =  -1.d0
-
-            e_vx(4) =  1.d0
-            e_vy(4) =  1.d0
-            e_vz(4) =  1.d0
-
-            e_vx(11) =  -1.d0
-            e_vy(11) =  -1.d0
-            e_vz(11) =  -1.d0
-
-
-            e_vx(5) =  1.d0
-            e_vy(5) =  -1.d0
-            e_vz(5) =  1.d0
-
-
-            e_vx(12) =  -1.d0
-            e_vy(12) =  1.d0
-            e_vz(12) =  -1.d0
-
-
-            e_vx(6) =  1.d0
-            e_vy(6) =  1.d0
-            e_vz(6) =  -1.d0
-
-            e_vx(13) =  -1.d0
-            e_vy(13) =  -1.d0
-            e_vz(13) =  1.d0            
-
-            e_vx(7) =  1.d0
-            e_vy(7) =  -1.d0
-            e_vz(7) =  -1.d0
-
-            e_vx(14) =  -1.d0
-            e_vy(14) =  1.d0
-            e_vz(14) =  1.d0
-
-            bb(1) = 8
-            bb(2) = 9
-            bb(3) = 10
-            bb(4) = 11
-            bb(5) = 12
-            bb(6) = 13
-            bb(7) = 14
-            bb(8) = 1
-            bb(9) = 2
-            bb(10) = 3
-            bb(11) = 4
-            bb(12) = 5
-            bb(13) = 6
-            bb(14) = 7
-            bb(15) = 15
-
-
-
-            w_q(15) = 2.0 / 9.0
-            w_q(1) = 1.0 / 9.0
-            w_q(8) = 1.0 / 9.0
-            w_q(2) = 1.0 / 9.0
-            w_q(9) = 1.0 / 9.0
-            w_q(3) = 1.0 / 9.0
-            w_q(10) = 1.0 / 9.0
-            w_q(4) = 1.0 / 72.0
-            w_q(11) = 1.0 / 72.0
-            w_q(5) = 1.0 / 72.0
-            w_q(12) = 1.0 / 72.0
-            w_q(6) = 1.0 / 72.0
-            w_q(13) = 1.0 / 72.0
-            w_q(7) = 1.0 / 72.0
-            w_q(14) = 1.0 / 72.0
-            
-
-
-      RETURN
-      END
-
-      subroutine initLBM_19
-C--------------------------------------------------------------------
-C
-C     Initialize LBM
-C
-C--------------------------------------------------------------------
-      include 'SIZE'
-      include 'TOTAL'
-      include 'CTIMER'
-      include 'LBM13'
-
-!      6  2  5 
-!        \|/
-!      3--+--1
-!        /|\
-!      7  4  8
-
-c     Set default logicals
-            integer::npts,NTOT1
-            NTOT1=lx1*ly1*lz1*lelv
-            npts=lx1*ly1*lz1*lelv*q_vel
-
-            CALL RZERO(velxn,NTOT1)
-            CALL RZERO(velyn,NTOT1)
-            CALL RZERO(velzn,NTOT1)
-            CALL RZERO(denstN,NTOT1)
-            CALL RZERO(f_1,npts)
-
-            e_vx(19) =  0.d0
-            e_vy(19) =  0.d0
-            e_vz(19) =  0.d0
-
-            e_vx(1) =  1.d0
-            e_vy(1) =  0.d0
-            e_vz(1) =  0.d0
-
-            e_vx(10) =  -1.d0
-            e_vy(10) =  0.d0
-            e_vz(10) =  0.d0            
-
-            e_vx(2) =  0.d0
-            e_vy(2) =  1.d0
-            e_vz(2) =  0.d0
-
-            e_vx(11) =  0.d0
-            e_vy(11) =  -1.d0
-            e_vz(11) =  0.d0
-
-            e_vx(3) =  0.d0
-            e_vy(3) =  0.d0
-            e_vz(3) =  1.d0
-
-            e_vx(12) =  0.d0
-            e_vy(12) =  0.d0
-            e_vz(12) =  -1.d0
-
-
-            e_vx(4) =  -1.d0
-            e_vy(4) =  -1.d0
-            e_vz(4) =  0.d0
-
-            e_vx(13) =  1.d0
-            e_vy(13) =  1.d0
-            e_vz(13) =  0.d0
-
-
-            e_vx(5) =  1.d0
-            e_vy(5) =  -1.d0
-            e_vz(5) =  0.d0
-
-
-            e_vx(14) =  -1.d0
-            e_vy(14) =  1.d0
-            e_vz(14) =  0.d0
-
-
-            e_vx(6) =  -1.d0
-            e_vy(6) =  0.d0
-            e_vz(6) =  1.d0
-
-            e_vx(15) =  1.d0
-            e_vy(15) =  0.d0
-            e_vz(15) =  -1.d0            
-
-            e_vx(7) =  0.d0
-            e_vy(7) =  -1.d0
-            e_vz(7) =  1.d0
-
-            e_vx(16) =  0.d0
-            e_vy(16) =  1.d0
-            e_vz(16) =  -1.d0
-
-            e_vx(8) =  1.d0
-            e_vy(8) =  0.d0
-            e_vz(8) =  1.d0
-
-            e_vx(17) =  -1.d0
-            e_vy(17) =  0.d0
-            e_vz(17) =  -1.d0
-
-            e_vx(9) =  0.d0
-            e_vy(9) =  1.d0
-            e_vz(9) =  1.d0
-
-            e_vx(18) =  0.d0
-            e_vy(18) =  -1.d0
-            e_vz(18) =  -1.d0
-
-            bb(1) = 10
-            bb(2) = 11
-            bb(3) = 12
-            bb(4) = 13
-            bb(5) = 14
-            bb(6) = 15
-            bb(7) = 16
-            bb(8) = 17
-            bb(9) = 18
-            bb(10) = 1
-            bb(11) = 2
-            bb(12) = 3
-            bb(13) = 4
-            bb(14) = 5
-            bb(15) = 6
-            bb(16) = 7
-            bb(17) = 8
-            bb(18) = 9
-            bb(19) = 19
-
-
-
-            w_q(19) = 1.0 / 3.0
-            w_q(1) = 1.0 / 18.0
-            w_q(10) = 1.0 / 18.0
-            w_q(2) = 1.0 / 18.0
-            w_q(11) = 1.0 / 18.0
-            w_q(3) = 1.0 / 18.0
-            w_q(12) = 1.0 / 18.0
-            w_q(4) = 1.0 / 36.0
-            w_q(13) = 1.0 / 36.0
-            w_q(5) = 1.0 / 36.0
-            w_q(14) = 1.0 / 36.0
-            w_q(6) = 1.0 / 36.0
-            w_q(15) =1.0 / 36.0
-            w_q(7) = 1.0 / 36.0
-            w_q(16) = 1.0 / 36.0
-            w_q(8) = 1.0 / 36.0
-            w_q(17) =1.0 / 36.0
-            w_q(9) =1.0 / 36.0
-            w_q(18) =1.0 / 36.0
-            
-
-
-      RETURN
-      END
 
       subroutine initLBM_13
 C--------------------------------------------------------------------
@@ -1175,7 +688,7 @@ C--------------------------------------------------------------------
       include 'SIZE'
       include 'TOTAL'
       include 'CTIMER'
-      include 'LBM13'
+      include 'LBMD3Q13'
 
 !      6  2  5 
 !        \|/
@@ -1294,7 +807,7 @@ c     Set default logicals
         implicit none
         include 'SIZE'
         include 'TOTAL'
-        include 'LBM13'
+        include 'LBMD3Q13'
 
         integer q,i,npts,nq
         real rk_a,rk_b1,rk_b2,rk_b3,rk_b4
@@ -1524,7 +1037,7 @@ c filterq
 
       include 'SIZE'
       include 'TSTEP'
-      include 'LBM13'
+      include 'LBMD3Q13'
 
       real w1(1),w2(1)
 c
