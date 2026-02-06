@@ -46,7 +46,7 @@ To enable the LBM driver, you must replace the default `drive1.f` file within th
 * **Action:** Replace this file with the `drive1.f` provided in the NekLBM repository.
 
 ## 3. Lattice & Physics Configuration
-The lattice structures and simulation parameters are defined in specific header/source files. Choose the file corresponding to your simulation requirements:
+The lattice structures and simulation parameters are defined in specific files provided in NekLBM/parameters. You have to copy those files to `Nek5000/core` folder. Choose the file corresponding to your simulation requirements:
 
 ### Single-Phase Lattices
 | Dimension | Lattice Type | Parameter File |
