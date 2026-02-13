@@ -51,11 +51,11 @@ The lattice structures and simulation parameters are defined in specific header/
 ### Single-Phase Lattices
 | Dimension | Lattice Type | Parameter File |
 | :--- | :--- | :--- |
-| **2D** | D2Q9 | `LBM` |
-| **3D** | D3Q13 | `LBM13` |
-| **3D** | D3Q15 | `LBM15` |
-| **3D** | D3Q19 | `LBM19` |
-| **3D** | D3Q27 | `LBM27` |
+| **2D** | D2Q9 | `LBMD2Q9` |
+| **3D** | D3Q13 | `LBMD3Q13` |
+| **3D** | D3Q15 | `LBMD3Q15` |
+| **3D** | D3Q19 | `LBMD3Q19` |
+| **3D** | D3Q27 | `LBMD3Q27` |
 
 ### Multi-Phase & Multi-Species
 For specialized physics, parameters are stored in the following files:
